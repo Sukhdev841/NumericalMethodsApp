@@ -1,8 +1,11 @@
 package com.example.sukhdev.numericalmethods;
 
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,13 +16,24 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private LinearLayout linear_layout;
-    private Button process_expression_button;
+    private Button process_expression_button,evaluate_button;
+    private s_expression expression;
+    private s_variable_table variable_table;
+    private List<String> variable_names;
+    private EditText[] variable_values;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +51,9 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        linear_layout = (LinearLayout) findViewById(R.id.variables_linear_layout);
+        linear_layout = findViewById(R.id.variables_linear_layout);
         process_expression_button = (Button) findViewById(R.id.process_expression_button);
+        evaluate_button = (Button) findViewById(R.id.evaluate_button);
 
         View.OnClickListener buttonListener = new View.OnClickListener() {
             @Override
@@ -47,17 +62,74 @@ public class MainActivity extends AppCompatActivity
                 {
                     process_expression_button_clicked();
                 }
+                if(view.getId() == R.id.evaluate_button)
+                {
+                    evaluate_button_clicked();
+                }
             }
         };
 
         process_expression_button.setOnClickListener(buttonListener);
+        evaluate_button.setOnClickListener(buttonListener);
     }
 
-    private void process_expression_button_clicked()
+    private TextView create_new_text_view(String view_name)
     {
-        linear_layout.setVisibility(View.VISIBLE);
+        final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.MATCH_PARENT);
+        final TextView tv = new TextView(this);
+        tv.setLayoutParams(params);
+        tv.setText(view_name);
+        return tv;
     }
 
+    private void process_expression_button_clicked() {
+
+        String expression_string = ((EditText)findViewById(R.id.expression_plain_text)).getText().toString();
+        expression = new s_expression(expression_string);
+        variable_table = expression.get_variables_table();
+        variable_names = variable_table.get_variable_names();
+
+        variable_values = new EditText[variable_names.size()];
+
+        linear_layout.removeAllViews();
+
+        for(int i=0;i<variable_names.size();i++)
+        {
+            LayoutInflater layoutInflater = getLayoutInflater();
+
+            View view = layoutInflater.inflate(R.layout.variable_layout,linear_layout,false);
+
+            LinearLayout cl = view.findViewById(R.id.variable_constraint_layout);
+
+            TextView tv = (TextView)cl.findViewById(R.id.variable_name_text_view);
+            EditText et = cl.findViewById(R.id.variable_value_edit_text);
+            variable_values[i] = et;
+
+            cl.removeAllViews();
+            tv.setText(variable_names.get(i));
+            et.setHint("0.00");
+            cl.addView(tv);
+            cl.addView(et);
+            linear_layout.addView(cl);
+        }
+
+        linear_layout.setVisibility(View.VISIBLE);
+        findViewById(R.id.evaluate_button).setVisibility(View.VISIBLE);
+
+    }
+
+    private void evaluate_button_clicked()
+    {
+        // get values of all variables from array of EditText
+        for(int i=0;i<variable_values.length;i++)
+        {
+            variable_table.add_variable(variable_names.get(i),variable_values[i].getText().toString());
+        }
+        float ans = expression.evaluate(variable_table);
+        TextView tv = (TextView) findViewById(R.id.answer_text_view);
+        tv.setText(Float.toString(ans));
+        findViewById(R.id.answer_text_view).setVisibility(View.VISIBLE);
+    }
 
     @Override
     public void onBackPressed() {

@@ -8,6 +8,7 @@
     <string name="evaluate_expression">Evaluate Expression</string>
     <string name="enter_expression_here">Enter Expression Here</string>
     <string name="process_expression">Process Expression</string>
+    <string name="evaluate">Evaluate</string>
 
     <string name="action_settings">Settings</string>
 </resources>
