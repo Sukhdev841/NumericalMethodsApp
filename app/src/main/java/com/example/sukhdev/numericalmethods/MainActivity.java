@@ -1,5 +1,6 @@
 package com.example.sukhdev.numericalmethods;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -73,16 +75,11 @@ public class MainActivity extends AppCompatActivity
         evaluate_button.setOnClickListener(buttonListener);
     }
 
-    private TextView create_new_text_view(String view_name)
-    {
-        final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.MATCH_PARENT);
-        final TextView tv = new TextView(this);
-        tv.setLayoutParams(params);
-        tv.setText(view_name);
-        return tv;
-    }
 
     private void process_expression_button_clicked() {
+
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(linear_layout.getWindowToken(), 0);
 
         String expression_string = ((EditText)findViewById(R.id.expression_plain_text)).getText().toString();
         expression = new s_expression(expression_string);
