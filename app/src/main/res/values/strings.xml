@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Numerical Methods</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="runge_kutta_method">Runge Kutta</string>
+    <string name="evaluate_expression">Evaluate Expression</string>
+    <string name="enter_expression_here">Enter Expression Here</string>
+    <string name="process_expression">Process Expression</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
